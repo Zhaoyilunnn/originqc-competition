@@ -38,9 +38,9 @@ def question2(theta: float) -> list:
     prog = QProg()
     circ = QCircuit()
 
+#         << RY(qubits[2], theta) \
     circ << H(qubits[1]) \
          << CNOT(qubits[1], qubits[0]) \
-         << RY(qubits[2], theta) \
          << CNOT(qubits[2], qubits[1]) \
          << H(qubits[1])
 
@@ -59,11 +59,19 @@ def question2(theta: float) -> list:
     prog << circ \
          << Measure(qubits[2], clbits[2]) \
          << Measure(qubits[1], clbits[1]) \
-         << qif0 \
-         << qif1 \
-         << Measure(qubits[0], clbits[0])
+#         << qif0 \
+#         << qif1 \
+#         << Measure(qubits[0], clbits[0])
 
-    result = qvm.prob_run_list(prog, [qubits[0]], -1)
+
+
+    print(draw_qprog(prog))
+
+    #result = qvm.prob_run_tuple_list(prog, qubits[1], -1)
+    result = qvm.prob_run_tuple_list(prog, qubits, -1)
+    #result = qvm.run_with_configuration(prog, clbits, 1024)
+
+    finalize()
 
     return result
 
@@ -109,4 +117,4 @@ def question2(theta: float) -> list:
 
 if __name__ == '__main__':
     #print(question1(str(sys.argv[1])))
-    question2(float(sys.argv[1]))
+    print(question2(float(sys.argv[1])))
