@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 from qiskit import QuantumCircuit, ClassicalRegister, QuantumRegister
 from qiskit import Aer
@@ -6,7 +7,7 @@ from qiskit.compiler import transpile
 from qiskit.quantum_info.operators import Operator, Pauli
 from qiskit.quantum_info import process_fidelity
 
-theta = 0.5
+theta = float(sys.argv[1])
 
 qr = QuantumRegister(3)
 bob_bell_cr = ClassicalRegister(1)
@@ -28,6 +29,8 @@ qte.ry(theta, 2)
 qte.cx(2, 1)
 qte.h(2)
 
+print(qte.draw(output='text'))
+
 qte.measure(qr[2], alice_psi_cr)
 qte.measure(qr[1], alice_bell_cr)
 
@@ -35,8 +38,8 @@ qte.measure(qr[1], alice_bell_cr)
 qte.x(0).c_if(alice_bell_cr, 1)
 qte.z(0).c_if(alice_psi_cr, 1)
 
-# # # q0 measurement store in bob_bell_cr
-# qte.measure(0, bob_bell_cr)
+## # q0 measurement store in bob_bell_cr
+#qte.measure(0, bob_bell_cr)
 
 
 # backend = Aer.get_backend('aer_simulator')
