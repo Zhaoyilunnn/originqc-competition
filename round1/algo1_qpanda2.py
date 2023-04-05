@@ -63,12 +63,14 @@ def question2(theta: float) -> list:
     ampls = [0, 0, 0, 0]
     sv_list = [None] * 4
     u_list = [None] * 4
+
+    # Complete state
+    # |\psi\rangle = |q2\rangle \otimes |q1\rangle \otimes |q0\rangle
+    # Thus unitary should be u2 \otimes u1 \otimes u0
     u_list[0] = np.kron(I, np.kron(I, I)) # case 00
-    u_list[1] = np.kron(X, np.kron(I, I)) # case 01
-    u_list[2] = np.kron(Z, np.kron(I, I)) # case 10
-    u_list[3] = np.kron(Z@X, np.kron(I, I)) # case 11
-    #print(X@Z)
-    #print(u_list)
+    u_list[1] = np.kron(np.kron(I, I), X) # case 01
+    u_list[2] = np.kron(np.kron(I, I), Z) # case 10
+    u_list[3] = np.kron(np.kron(I, I), Z@X) # case 11
 
     prob_psi = [0, 0]
 
@@ -85,7 +87,7 @@ def question2(theta: float) -> list:
             prob_psi[1] = np.sum(sv_list[i][1::2])
             print(prob_psi)
 
-    print(prob_list)
+    return prob_psi
 
 
 if __name__ == '__main__':
