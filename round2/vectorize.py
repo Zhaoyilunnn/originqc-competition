@@ -1,3 +1,6 @@
+import logging
+from typing import List
+
 import numpy as np
 
 
@@ -7,6 +10,7 @@ class ForwardMaxMatch:
     def __init__(self, dict_path):
         self.dict_path = dict_path
         self.word_dict = {}
+        self.vec_size = None
         self.generate_dict()
         #with open(dict_path, 'r', encoding='utf-8') as f:
         #    for line in f:
@@ -14,9 +18,16 @@ class ForwardMaxMatch:
 
     def generate_dict(self):
         """Generate dict"""
+        line_idx = 0
         with open(self.dict_path, 'r', encoding='utf-8') as f:
             for line in f:
+                line_idx += 1
+                if line_idx == 1:
+                    continue
                 items = line.strip().split()
+                if not self.vec_size:
+                    self.vec_size = len(items) - 1
+                assert len(items) - 1 == self.vec_size
                 word = items[0]
                 vec = [float(e) for e in items[1:]]
                 self.word_dict[word] = vec
@@ -39,3 +50,21 @@ class ForwardMaxMatch:
                     break
         return words
 
+    def to_vec(self, words: List[str]):
+        """
+        Transform words to vector, simply average each word's vector
+        Args:
+            words: List of tokens in a sentence
+        """
+        if len(words) == 0:
+            raise ValueError("Empty words list")
+        if not self.vec_size:
+            raise ValueError("Unknown vector size")
+        vec = np.zeros(self.vec_size)
+        for w in words:
+            try:
+                vec += np.array(self.word_dict[w])
+            except KeyError as e:
+                logging.info(f"Error getting vector for word: {w}, error: {e}")
+                continue
+        return np.divide(vec, len(words))
