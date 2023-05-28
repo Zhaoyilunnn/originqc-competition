@@ -8,3 +8,13 @@
 
 ## References
 1. https://github.com/RIvance/QLSTM-VQNet/blob/master/QLSTM.py
+
+
+# Training
+
+```
+python test.py
+```
+
+# Issues
+Training process too slow
