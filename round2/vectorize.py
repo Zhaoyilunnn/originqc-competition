@@ -12,6 +12,7 @@ class ForwardMaxMatch:
         self.word_dict = {}
         self.vec_size = None
         self.generate_dict()
+        self.sentence_size = 0 # Maximum number of words in a sentence
         #with open(dict_path, 'r', encoding='utf-8') as f:
         #    for line in f:
         #        self.word_dict.add(line.strip())
@@ -48,9 +49,10 @@ class ForwardMaxMatch:
                     words.append(sentence[i:i + j])
                     i += j
                     break
+        self.sentence_size = max(self.sentence_size, len(words))
         return words
 
-    def to_vec(self, words: List[str]):
+    def to_one_dim_vec(self, words: List[str]):
         """
         Transform words to vector, simply average each word's vector
         Args:
@@ -68,3 +70,41 @@ class ForwardMaxMatch:
                 logging.info(f"Error getting vector for word: {w}, error: {e}")
                 continue
         return np.divide(vec, len(words))
+
+    def to_two_dim_vec(self, words: List[str]):
+        """
+        Transform words to 2d-vector, concat each word's embedding, padding to sentence size
+        Args:
+            words: List of tokens in a sentence
+        """
+        if len(words) == 0:
+            raise ValueError("Empty words list")
+        if not self.vec_size:
+            raise ValueError("Unknown vector size")
+        vec = np.zeros((self.vec_size, self.sentence_size))
+        for i, w in enumerate(words):
+            try:
+                vec[:,i] = np.array(self.word_dict[w])
+            except KeyError as e:
+                logging.info(f"Error getting vector for word: {w}, error: {e}")
+                continue
+        return vec
+
+    def to_two_dim_vec_v2(self, words: List[str]):
+        """
+        Transform words to 2d-vector, concat each word's embedding, padding to sentence size
+        Args:
+            words: List of tokens in a sentence
+        """
+        if len(words) == 0:
+            raise ValueError("Empty words list")
+        if not self.vec_size:
+            raise ValueError("Unknown vector size")
+        vec = np.zeros((self.vec_size, self.sentence_size))
+        for i, w in enumerate(words):
+            try:
+                vec[:,i] = np.array(self.word_dict[w])
+            except KeyError as e:
+                logging.info(f"Error getting vector for word: {w}, error: {e}")
+                continue
+        return vec

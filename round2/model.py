@@ -1,6 +1,15 @@
 import torch
 import torch.nn as nn
 
+import pyvqnet
+from pyvqnet.qnn.qdrl.vqnet_model import qdrl_circuit
+from pyvqnet.qnn.quantumlayer import QuantumLayer
+from pyvqnet.optim import adam
+from pyvqnet.nn.loss import CategoricalCrossEntropy
+from pyvqnet.tensor import QTensor
+import numpy as np
+from pyvqnet.nn.module import Module
+
 
 class SimpleNet(nn.Module):
 
@@ -16,3 +25,6 @@ class SimpleNet(nn.Module):
         out = self.fc2(out)
         return out
 
+class QNet(pyvqnet.nn.Module):
+
+    pass
